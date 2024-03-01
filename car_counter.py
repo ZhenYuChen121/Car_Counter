@@ -4,6 +4,7 @@ import numpy as np
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import torch
+import cvzone
 
 
 from ultralytics import YOLO
@@ -80,7 +81,7 @@ def main(videoPath, modelName):
     # cv2.imwrite('mask_after_resize.jpg', mask)
 
     # car icon
-    car = cv2.imread("graphics.png")
+    car = cv2.imread("graphics.png", cv2.IMREAD_UNCHANGED)
 
     # line
     line = [320, 350, 690, 350]
@@ -98,6 +99,7 @@ def main(videoPath, modelName):
         success, frame = video.read()  # Read frame
         if not success:
             break
+        frame = cvzone.overlayPNG(frame, car, (0,0)) # overlap car icon
         #print(frame.shape)
 
 
@@ -124,7 +126,7 @@ def main(videoPath, modelName):
 
 
         cv2.line(frame, (line[0],line[1]), (line[2], line[3]), (0,0,255), thickness=3) # draw limit line
-        cv2.putText(frame, 'Count: %s' % len(total_count_list), (70, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 215, 255), 4) # draw counter text
+        cv2.putText(frame, '%s' % len(total_count_list), (240, 90), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 215, 255), 7) # draw counter text
 
         # Show
         cv2.imshow('frame', frame)
